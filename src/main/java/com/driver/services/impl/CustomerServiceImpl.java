@@ -4,7 +4,6 @@ import com.driver.Exception.cabNotAvailableException;
 import com.driver.model.TripBooking;
 import com.driver.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.driver.model.Customer;
@@ -14,7 +13,6 @@ import com.driver.repository.DriverRepository;
 import com.driver.repository.TripBookingRepository;
 import com.driver.model.TripStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,13 +56,13 @@ public class CustomerServiceImpl implements CustomerService {
 			List<Driver> driverList=driverRepository2.findAll();
 			driverList.sort((a,b)->(a.getDriverId()-b.getDriverId()));
 			for (Driver driver:driverList) {
-				if (driver.getCab().isAvailable()){
+				if (driver.getCab().getAvailable()){
 					driver.getCab().setAvailable(false);
 
 					tripBooking.setFromLocation(fromLocation);
 					tripBooking.setToLocation(toLocation);
 					tripBooking.setDistanceInKm(distanceInKm);
-					tripBooking.setTripStatus(TripStatus.CONFIRMED);
+					tripBooking.setStatus(TripStatus.CONFIRMED);
 					tripBooking.setBill(distanceInKm*driver.getCab().getPerKmRate());
 
 					TripBooking savedTripBooking = tripBookingRepository2.save(tripBooking);
@@ -89,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
 			Optional<TripBooking> optionalTripBooking = tripBookingRepository2.findById(tripId);
 			if (optionalTripBooking.isPresent()){
 				TripBooking tripBooking=optionalTripBooking.get();
-				tripBooking.setTripStatus(TripStatus.CANCELED);
+				tripBooking.setStatus(TripStatus.CANCELED);
 				tripBookingRepository2.save(tripBooking);
 			}
 		}
@@ -100,7 +98,7 @@ public class CustomerServiceImpl implements CustomerService {
 			Optional<TripBooking> optionalTripBooking = tripBookingRepository2.findById(tripId);
 			if (optionalTripBooking.isPresent()){
 				TripBooking tripBooking=optionalTripBooking.get();
-				tripBooking.setTripStatus(TripStatus.COMPLETED);
+				tripBooking.setStatus(TripStatus.COMPLETED);
 				tripBookingRepository2.save(tripBooking);
 			}
 		}
