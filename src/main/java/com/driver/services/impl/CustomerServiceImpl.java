@@ -40,13 +40,19 @@ public class CustomerServiceImpl implements CustomerService {
 		// Delete customer without using deleteById function
 		if (customerRepository2.existsById(customerId))
 			customerRepository2.deleteById(customerId);
-		}
+	}
 
-		@Override
-		public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
-			//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
-			//Avoid using SQL query
-			Customer customer = customerRepository2.findById(customerId).get();
+	@Override
+	public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
+		//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
+		//Avoid using SQL query
+		Customer customer;
+		try {
+			customer = customerRepository2.findById(customerId).get();
+		}
+		catch (Exception e){
+			throw new CabNotAvailableException("No cab available!");
+		}
 			TripBooking tripBooking = new TripBooking();
 			List<Driver> driverList=driverRepository2.findAll();
 			driverList.sort((a,b)->(a.getDriverId()-b.getDriverId()));
