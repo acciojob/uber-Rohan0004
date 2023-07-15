@@ -29,18 +29,22 @@ public class CustomerController {
 
 	@PostMapping("/bookTrip")
 	public ResponseEntity<Integer> bookTrip(@RequestParam Integer customerId, @RequestParam String fromLocation, @RequestParam String toLocation, @RequestParam Integer distanceInKm) throws Exception {
-		TripBooking bookedTrip = customerService.bookTrip(customerId,fromLocation,toLocation,distanceInKm);
-		if (bookedTrip==null) return new ResponseEntity("customer Not found",HttpStatus.NOT_FOUND);
-		return new ResponseEntity<>(bookedTrip.getTripBookingId(), HttpStatus.CREATED);
-	}
+		try {
+			TripBooking bookedTrip = customerService.bookTrip(customerId,fromLocation,toLocation,distanceInKm);
+			return new ResponseEntity<>(bookedTrip.getTripBookingId(), HttpStatus.CREATED);
+		}
+		catch (Exception e){
+			return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+		}
+		}
 
-	@DeleteMapping("/complete")
-	public void completeTrip(@RequestParam Integer tripId){
-		customerService.completeTrip(tripId);
-	}
+		@DeleteMapping("/complete")
+		public void completeTrip(@RequestParam Integer tripId){
+			customerService.completeTrip(tripId);
+		}
 
-	@DeleteMapping("/cancelTrip")
-	public void cancelTrip(@RequestParam Integer tripId){
-		customerService.cancelTrip(tripId);
-	}
+		@DeleteMapping("/cancelTrip")
+		public void cancelTrip(@RequestParam Integer tripId){
+			customerService.cancelTrip(tripId);
+		}
 }

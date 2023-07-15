@@ -1,6 +1,7 @@
 package com.driver.services.impl;
 
-import com.driver.Exception.cabNotAvailableException;
+import com.driver.Exception.CabNotAvailableException;
+import com.driver.Exception.CustomerNotFoundException;
 import com.driver.model.TripBooking;
 import com.driver.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,8 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void deleteCustomer(Integer customerId) {
 		// Delete customer without using deleteById function
-		try {
+		if (customerRepository2.existsById(customerId))
 			customerRepository2.deleteById(customerId);
-		}
-		catch (Exception e){
-			return;
-		}
 		}
 
 		@Override
@@ -50,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
 			//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
 			//Avoid using SQL query
 			Optional<Customer> optionalCustomer = customerRepository2.findById(customerId);
-			if (!optionalCustomer.isPresent()) return null;
+			if (!optionalCustomer.isPresent()) throw new CustomerNotFoundException("Customer Not Found!!!");
 			Customer customer = optionalCustomer.get();
 			TripBooking tripBooking = new TripBooking();
 			List<Driver> driverList=driverRepository2.findAll();
@@ -78,7 +75,7 @@ public class CustomerServiceImpl implements CustomerService {
 					return savedTripBooking;
 				}
 			}
-			throw new cabNotAvailableException("No cab available!");
+			throw new CabNotAvailableException("No cab available!");
 		}
 
 		@Override

@@ -9,7 +9,7 @@ public class Cab {
     private int perKmRate;
     private boolean available;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Driver driver;
     public Cab() {
     }
