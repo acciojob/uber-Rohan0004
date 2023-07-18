@@ -69,11 +69,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 				tripBooking.setDriver(driver);
 				tripBooking.setCustomer(customer);
-				TripBooking savedTripBooking = tripBookingRepository2.save(tripBooking);
-				customer.getTripBookingList().add(savedTripBooking);
-				driver.getTripBookingList().add(savedTripBooking);
+//				TripBooking savedTripBooking = tripBookingRepository2.save(tripBooking);
+				customer.getTripBookingList().add(tripBooking);
+				driver.getTripBookingList().add(tripBooking);
 
-				return savedTripBooking;
+				customerRepository2.save(customer);
+				driverRepository2.save(driver);
+
+				return tripBooking;
 			}
 		}
 		throw new CabNotAvailableException("No cab available!");
@@ -92,6 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
 			driver.getCab().setAvailable(true);
 
 			driverRepository2.save(driver);
+			tripBookingRepository2.save(tripBooking);
 		}
 	}
 
@@ -107,6 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
 			driver.getCab().setAvailable(true);
 
 			driverRepository2.save(driver);
+			tripBookingRepository2.save(tripBooking);
 		}
 	}
 }
